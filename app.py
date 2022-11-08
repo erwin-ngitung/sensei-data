@@ -1,6 +1,6 @@
 import os
 from streamlit_multipage import MultiPage
-from utils import check_email, check_account, update_json, replace_json, change_path_band
+from utils import check_email, check_account, update_json, replace_json
 from PIL import Image
 import streamlit as st
 import pandas as pd
