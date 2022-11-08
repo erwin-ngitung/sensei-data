@@ -130,6 +130,52 @@ def dashboard(st, **state):
     # End Code Adit
 
 
+def projection(st, **state):
+    # Title
+    image = Image.open("images/logo_sensei_data.png")
+    st1, st2, st3 = st.columns(3)
+
+    with st2:
+        st.image(image)
+
+    st.markdown("<svg width=\"705\" height=\"5\"><line x1=\"0\" y1=\"2.5\" x2=\"705\" y2=\"2.5\" stroke=\"black\" "
+                "stroke-width=\"4\" fill=\"black\" /></svg>", unsafe_allow_html=True)
+    st.markdown("<h3 style=\"text-align:center;\">Projection</h3>", unsafe_allow_html=True)
+
+    restriction = state["login"]
+
+    if "login" not in state or restriction == "False":
+        st.warning("Please login with your registered email!")
+        return
+
+    # Start Code Adit
+
+    # End Code Adit
+
+
+def deployment_model(st, **state):
+    # Title
+    image = Image.open("images/logo_sensei_data.png")
+    st1, st2, st3 = st.columns(3)
+
+    with st2:
+        st.image(image)
+
+    st.markdown("<svg width=\"705\" height=\"5\"><line x1=\"0\" y1=\"2.5\" x2=\"705\" y2=\"2.5\" stroke=\"black\" "
+                "stroke-width=\"4\" fill=\"black\" /></svg>", unsafe_allow_html=True)
+    st.markdown("<h3 style=\"text-align:center;\">Projection</h3>", unsafe_allow_html=True)
+
+    restriction = state["login"]
+
+    if "login" not in state or restriction == "False":
+        st.warning("Please login with your registered email!")
+        return
+
+    # Start Code Adit
+
+    # End Code Adit
+
+
 def report(st, **state):
     # Title
     image = Image.open("images/logo_sensei_data.png")
@@ -264,6 +310,8 @@ app.hide_navigation = True
 app.add_app("Sign Up", sign_up)
 app.add_app("Login", login)
 app.add_app("Dashboard", dashboard)
+app.add_app("Projection", projection)
+app.add_app("Deplyment Model", deployment_model)
 app.add_app("Report", report)
 app.add_app("Account Setting", account)
 app.add_app("Logout", logout)
