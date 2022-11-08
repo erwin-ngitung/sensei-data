@@ -115,33 +115,3 @@ def change_json(path):
     data_json = gpd.read_file('data/Indonesia_SHP.json')
 
     return data_json
-
-
-def change_path_band(path_file):
-    band = dict()
-
-    for path in path_file:
-        if 'B1' in path:
-            band.update({'Band 01': path})
-        elif 'B2' in path:
-            band.update({'Band 02': path})
-        elif 'B3' in path:
-            band.update({'Band 03': path})
-        elif 'B4' in path:
-            band.update({'Band 04': path})
-        elif 'B5' in path:
-            band.update({'Band 05': path})
-        elif 'B6' in path:
-            band.update({'Band 06': path})
-        elif 'B7' in path:
-            band.update({'Band 07': path})
-        elif 'B8' in path:
-            band.update({'Band 08': path})
-        elif 'B9' in path:
-            band.update({'Band 09': path})
-        elif 'B10' in path:
-            band.update({'Band 10': path})
-        elif 'B11' in path:
-            band.update({'Band 11': path})
-
-    return band
