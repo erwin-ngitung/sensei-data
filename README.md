@@ -1,1 +1,1 @@
-# sensei-data
+# Sensei Data
