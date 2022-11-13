@@ -9,3 +9,4 @@ pillow~=9.2.0
 sklearn~=0.0
 scikit-learn~=1.1.1
 streamlit-multipage~=0.0.18
+seaborn

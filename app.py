@@ -7,8 +7,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import rasterio
-from sklearn.preprocessing import MinMaxScaler
+from utils import visualization as vs
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -125,9 +126,101 @@ def dashboard(st, **state):
         st.warning("Please login with your registered email!")
         return
 
-    # Start Code Adit
+    data_temp = pd.read_excel("data/temperature/temperature_indonesia.xlsx",
+                              engine="openpyxl")
 
-    # End Code Adit
+    st.markdown("")
+    st.markdown("Plantation Production")
+    st.markdown("")
+
+    data_plant = pd.read_excel("data/produktivitas/plantation_fix.xlsx",
+                               engine="openpyxl")
+    comm_plant = st.selectbox("Please select commodity do you want!",
+                              data_plant['commodity'].unique())
+    st1, st2 = st.columns(2)
+    with st1:
+        fig1, ax1 = vs.visualization_data(data_temp,
+                                          "year",
+                                          "mean_temperature",
+                                          "Year",
+                                          "Temperature $(^o C)$",
+                                          "Graph Temperature Indonesia from 1901 - 2021")
+
+        st.pyplot(fig1)
+
+    with st2:
+        dataset1 = data_plant.groupby(["commodity", "year"],
+                                      as_index=False).aggregate({'total_productivity': np.sum})
+        fig2, ax2 = vs.visualization_data(dataset1[dataset1["commodity"] == comm_plant],
+                                          "year",
+                                          "total_productivity",
+                                          "Year",
+                                          "Production (TON)",
+                                          "Graph Plantation Production in West Java from 2013 - 2021")
+
+        st.pyplot(fig2)
+
+    st.markdown("")
+    st.markdown("Agriculture Production")
+    st.markdown("")
+
+    data_rice = pd.read_excel("data/produktivitas/rice_fix.xlsx",
+                              engine="openpyxl")
+    comm_rice = st.selectbox("Please select commodity do you want!",
+                             data_rice['commodity'].unique())
+    st3, st4 = st.columns(2)
+    with st3:
+        fig1, ax1 = vs.visualization_data(data_temp,
+                                          "year",
+                                          "mean_temperature",
+                                          "Year",
+                                          "Temperature $(^o C)$",
+                                          "Graph Temperature Indonesia from 1901 - 2021")
+
+        st.pyplot(fig1)
+
+    with st4:
+        dataset2 = data_rice.groupby(["commodity", "year"],
+                                     as_index=False).aggregate({'total_productivity': np.sum})
+        fig2, ax2 = vs.visualization_data(dataset2[dataset2["commodity"] == comm_rice],
+                                          "year",
+                                          "total_productivity",
+                                          "Year",
+                                          "Production (TON)",
+                                          "Graph Agriculture Production in West Java from 2013 - 2021")
+
+        st.pyplot(fig2)
+
+    st.markdown("")
+    st.markdown("Vegetables Production")
+    st.markdown("")
+
+    data_vegetables = pd.read_excel("data/produktivitas/vegetables_fix.xlsx",
+                                    engine="openpyxl")
+    comm_vegetables = st.selectbox("Please select commodity do you want!",
+                                   data_vegetables['commodity'].unique())
+    st5, st6 = st.columns(2)
+    with st5:
+        fig1, ax1 = vs.visualization_data(data_temp,
+                                          "year",
+                                          "mean_temperature",
+                                          "Year",
+                                          "Temperature $(^o C)$",
+                                          "Graph Temperature Indonesia from 1901 - 2021")
+
+        st.pyplot(fig1)
+
+    with st6:
+        dataset3 = data_vegetables.groupby(["commodity", "year"],
+                                           as_index=False).aggregate({'total_productivity': np.sum})
+        fig2, ax2 = vs.visualization_data(dataset3[dataset3["commodity"] == comm_vegetables],
+                                          "year",
+                                          "total_productivity",
+                                          "Year",
+                                          "Production (TON)",
+                                          "Graph Vegetables Production in West Java from 2013 - 2021")
+
+        st.pyplot(fig2)
 
 
 def projection(st, **state):
@@ -311,7 +404,7 @@ app.add_app("Sign Up", sign_up)
 app.add_app("Login", login)
 app.add_app("Dashboard", dashboard)
 app.add_app("Projection", projection)
-app.add_app("Deplyment Model", deployment_model)
+app.add_app("Deployment Model", deployment_model)
 app.add_app("Report", report)
 app.add_app("Account Setting", account)
 app.add_app("Logout", logout)
