@@ -108,7 +108,7 @@ def login(st, **state):
         st.error("Please login with your registered email!")
 
 
-def dashboard(st, **state):
+def data_insight(st, **state):
     # Title
     image = Image.open("images/logo_sensei_data.png")
     st1, st2, st3 = st.columns(3)
@@ -118,7 +118,7 @@ def dashboard(st, **state):
 
     st.markdown("<svg width=\"705\" height=\"5\"><line x1=\"0\" y1=\"2.5\" x2=\"705\" y2=\"2.5\" stroke=\"black\" "
                 "stroke-width=\"4\" fill=\"black\" /></svg>", unsafe_allow_html=True)
-    st.markdown("<h3 style=\"text-align:center;\">Dashboard</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style=\"text-align:center;\">Data Insight</h3>", unsafe_allow_html=True)
 
     restriction = state["login"]
 
@@ -129,45 +129,26 @@ def dashboard(st, **state):
     data_temp = pd.read_excel("data/temperature/temperature_indonesia.xlsx",
                               engine="openpyxl")
 
-    st.markdown("")
-    st.markdown("Plantation Production")
-    st.markdown("")
-
-    data_plant = pd.read_excel("data/produktivitas/plantation_fix.xlsx",
-                               engine="openpyxl")
-    comm_plant = st.selectbox("Please select commodity do you want!",
-                              data_plant['commodity'].unique())
     st1, st2 = st.columns(2)
     with st1:
-        fig1, ax1 = vs.visualization_data(data_temp,
-                                          "year",
-                                          "mean_temperature",
-                                          "Year",
-                                          "Temperature $(^o C)$",
-                                          "Graph Temperature Indonesia from 1901 - 2021")
-
-        st.pyplot(fig1)
-
+        kind = st.radio("Please select kind of crops do you want!",
+                        ["Plantations",
+                         "Agriculture",
+                         "Vegetable"])
     with st2:
-        dataset1 = data_plant.groupby(["commodity", "year"],
-                                      as_index=False).aggregate({'total_productivity': np.sum})
-        fig2, ax2 = vs.visualization_data(dataset1[dataset1["commodity"] == comm_plant],
-                                          "year",
-                                          "total_productivity",
-                                          "Year",
-                                          "Production (TON)",
-                                          "Graph Plantation Production in West Java from 2013 - 2021")
+        if kind == "Plantations":
+            data = pd.read_excel("data/produktivitas/plantation_fix.xlsx",
+                                 engine="openpyxl")
+        elif kind == "Agriculture":
+            data = pd.read_excel("data/produktivitas/rice_fix.xlsx",
+                                 engine="openpyxl")
+        elif kind == "Vegetables":
+            data = pd.read_excel("data/produktivitas/vegetables_fix.xlsx",
+                                 engine="openpyxl")
 
-        st.pyplot(fig2)
+        commodity = st.selectbox("Please select commodity do you want!",
+                                 data['commodity'].unique())
 
-    st.markdown("")
-    st.markdown("Agriculture Production")
-    st.markdown("")
-
-    data_rice = pd.read_excel("data/produktivitas/rice_fix.xlsx",
-                              engine="openpyxl")
-    comm_rice = st.selectbox("Please select commodity do you want!",
-                             data_rice['commodity'].unique())
     st3, st4 = st.columns(2)
     with st3:
         fig1, ax1 = vs.visualization_data(data_temp,
@@ -180,45 +161,14 @@ def dashboard(st, **state):
         st.pyplot(fig1)
 
     with st4:
-        dataset2 = data_rice.groupby(["commodity", "year"],
-                                     as_index=False).aggregate({'total_productivity': np.sum})
-        fig2, ax2 = vs.visualization_data(dataset2[dataset2["commodity"] == comm_rice],
+        dataset = data.groupby(["commodity", "year"],
+                               as_index=False).aggregate({'total_productivity': np.sum})
+        fig2, ax2 = vs.visualization_data(dataset[dataset["commodity"] == commodity],
                                           "year",
                                           "total_productivity",
                                           "Year",
                                           "Production (TON)",
-                                          "Graph Agriculture Production in West Java from 2013 - 2021")
-
-        st.pyplot(fig2)
-
-    st.markdown("")
-    st.markdown("Vegetables Production")
-    st.markdown("")
-
-    data_vegetables = pd.read_excel("data/produktivitas/vegetables_fix.xlsx",
-                                    engine="openpyxl")
-    comm_vegetables = st.selectbox("Please select commodity do you want!",
-                                   data_vegetables['commodity'].unique())
-    st5, st6 = st.columns(2)
-    with st5:
-        fig1, ax1 = vs.visualization_data(data_temp,
-                                          "year",
-                                          "mean_temperature",
-                                          "Year",
-                                          "Temperature $(^o C)$",
-                                          "Graph Temperature Indonesia from 1901 - 2021")
-
-        st.pyplot(fig1)
-
-    with st6:
-        dataset3 = data_vegetables.groupby(["commodity", "year"],
-                                           as_index=False).aggregate({'total_productivity': np.sum})
-        fig2, ax2 = vs.visualization_data(dataset3[dataset3["commodity"] == comm_vegetables],
-                                          "year",
-                                          "total_productivity",
-                                          "Year",
-                                          "Production (TON)",
-                                          "Graph Vegetables Production in West Java from 2013 - 2021")
+                                          str("Graph " + kind + " Production in West Java from 2013 - 2021"))
 
         st.pyplot(fig2)
 
@@ -402,7 +352,7 @@ app.hide_navigation = True
 
 app.add_app("Sign Up", sign_up)
 app.add_app("Login", login)
-app.add_app("Dashboard", dashboard)
+app.add_app("Data Insight", data_insight)
 app.add_app("Projection", projection)
 app.add_app("Deployment Model", deployment_model)
 app.add_app("Report", report)
