@@ -134,7 +134,7 @@ def data_insight(st, **state):
         kind = st.radio("Please select kind of crops do you want!",
                         ["Plantations",
                          "Agriculture",
-                         "Vegetable"])
+                         "Vegetables"])
     with st2:
         if kind == "Plantations":
             data = pd.read_excel("data/produktivitas/plantation_fix.xlsx",
