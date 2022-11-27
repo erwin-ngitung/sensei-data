@@ -1,12 +1,9 @@
-import os
 from streamlit_multipage import MultiPage
-from utils import check_email, check_account, update_json, replace_json
+from utils import check_email, check_account, update_json, replace_json, machine_learning as ml
 from PIL import Image
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import rasterio
 from utils import visualization as vs
 import warnings
 
@@ -108,7 +105,7 @@ def login(st, **state):
         st.error("Please login with your registered email!")
 
 
-def data_insight(st, **state):
+def dashboard(st, **state):
     # Title
     image = Image.open("images/logo_sensei_data.png")
     st1, st2, st3 = st.columns(3)
@@ -118,7 +115,7 @@ def data_insight(st, **state):
 
     st.markdown("<svg width=\"705\" height=\"5\"><line x1=\"0\" y1=\"2.5\" x2=\"705\" y2=\"2.5\" stroke=\"black\" "
                 "stroke-width=\"4\" fill=\"black\" /></svg>", unsafe_allow_html=True)
-    st.markdown("<h3 style=\"text-align:center;\">Data Insight</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style=\"text-align:center;\">Dashboard</h3>", unsafe_allow_html=True)
 
     restriction = state["login"]
 
@@ -171,6 +168,44 @@ def data_insight(st, **state):
                                           str("Graph " + kind + " Production in West Java from 2013 - 2021"))
 
         st.pyplot(fig2)
+
+
+def data_insight(st, **state):
+    # Title
+    image = Image.open("images/logo_sensei_data.png")
+    st1, st2, st3 = st.columns(3)
+
+    with st2:
+        st.image(image)
+
+    st.markdown("<svg width=\"705\" height=\"5\"><line x1=\"0\" y1=\"2.5\" x2=\"705\" y2=\"2.5\" stroke=\"black\" "
+                "stroke-width=\"4\" fill=\"black\" /></svg>", unsafe_allow_html=True)
+    st.markdown("<h3 style=\"text-align:center;\">Data Insight</h3>", unsafe_allow_html=True)
+
+    restriction = state["login"]
+
+    if "login" not in state or restriction == "False":
+        st.warning("Please login with your registered email!")
+        return
+
+    kind = st.radio("Please select kind of crops do you want!",
+                    ["All",
+                     "Plantations",
+                     "Agriculture",
+                     "Vegetables"])
+
+    dataset = ml.add_rate(kind)
+
+    dec = len(dataset[dataset["rate_change"] < -1])
+    inc = len(dataset[dataset["rate_change"] > 1])
+    net = len(dataset[(dataset["rate_change"] > -1) & (dataset["rate_change"] < 1)])
+
+    labels = ["Decrease", "Increase", "Neutral"]
+    sized = [dec, inc, net]
+
+    fig, ax = vs.chart_pie(labels, sized)
+
+    st.pyplot(fig)
 
 
 def projection(st, **state):
@@ -352,6 +387,7 @@ app.hide_navigation = True
 
 app.add_app("Sign Up", sign_up)
 app.add_app("Login", login)
+app.add_app("Dashboard", dashboard)
 app.add_app("Data Insight", data_insight)
 app.add_app("Projection", projection)
 app.add_app("Deployment Model", deployment_model)
