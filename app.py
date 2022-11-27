@@ -123,89 +123,85 @@ def dashboard(st, **state):
         st.warning("Please login with your registered email!")
         return
 
-    data_temp = pd.read_excel("data/temperature/temperature_indonesia.xlsx",
-                              engine="openpyxl")
+    tab1, tab2 = st.tabs(["📈 Chart", "🗃 Data Insight"])
 
-    st1, st2 = st.columns(2)
-    with st1:
-        kind = st.radio("Please select kind of crops do you want!",
-                        ["Plantations",
-                         "Agriculture",
-                         "Vegetables"])
-    with st2:
-        if kind == "Plantations":
-            data = pd.read_excel("data/produktivitas/plantation_fix.xlsx",
-                                 engine="openpyxl")
-        elif kind == "Agriculture":
-            data = pd.read_excel("data/produktivitas/rice_fix.xlsx",
-                                 engine="openpyxl")
-        elif kind == "Vegetables":
-            data = pd.read_excel("data/produktivitas/vegetables_fix.xlsx",
-                                 engine="openpyxl")
+    with tab1:
+        data_temp = pd.read_excel("data/temperature/temperature_indonesia.xlsx",
+                                  engine="openpyxl")
 
-        commodity = st.selectbox("Please select commodity do you want!",
-                                 data['commodity'].unique())
+        st1, st2 = st.columns(2)
+        with st1:
+            kind = st.radio("Please select kind of crops do you want!",
+                            ["Plantations",
+                             "Agriculture",
+                             "Vegetables"])
+        with st2:
+            if kind == "Plantations":
+                data = pd.read_excel("data/produktivitas/plantation_fix.xlsx",
+                                     engine="openpyxl")
+            elif kind == "Agriculture":
+                data = pd.read_excel("data/produktivitas/rice_fix.xlsx",
+                                     engine="openpyxl")
+            elif kind == "Vegetables":
+                data = pd.read_excel("data/produktivitas/vegetables_fix.xlsx",
+                                     engine="openpyxl")
 
-    st3, st4 = st.columns(2)
-    with st3:
-        fig1, ax1 = vs.visualization_data(data_temp,
-                                          "year",
-                                          "mean_temperature",
-                                          "Year",
-                                          "Temperature $(^o C)$",
-                                          "Graph Temperature Indonesia from 1901 - 2021")
+            commodity = st.selectbox("Please select commodity do you want!",
+                                     data['commodity'].unique())
 
-        st.pyplot(fig1)
+        st3, st4 = st.columns(2)
+        with st3:
+            fig1, ax1 = vs.visualization_data(data_temp,
+                                              "year",
+                                              "mean_temperature",
+                                              "Year",
+                                              "Temperature $(^o C)$",
+                                              "Graph Temperature Indonesia from 1901 - 2021")
 
-    with st4:
-        dataset = data.groupby(["commodity", "year"],
-                               as_index=False).aggregate({'total_productivity': np.sum})
-        fig2, ax2 = vs.visualization_data(dataset[dataset["commodity"] == commodity],
-                                          "year",
-                                          "total_productivity",
-                                          "Year",
-                                          "Production (TON)",
-                                          str("Graph " + kind + " Production in West Java from 2013 - 2021"))
+            st.pyplot(fig1)
 
-        st.pyplot(fig2)
+        with st4:
+            dataset = data.groupby(["commodity", "year"],
+                                   as_index=False).aggregate({'total_productivity': np.sum})
+            fig2, ax2 = vs.visualization_data(dataset[dataset["commodity"] == commodity],
+                                              "year",
+                                              "total_productivity",
+                                              "Year",
+                                              "Production (TON)",
+                                              str("Graph " + kind + " Production in West Java from 2013 - 2021"))
 
+            st.pyplot(fig2)
 
-def data_insight(st, **state):
-    # Title
-    image = Image.open("images/logo_sensei_data.png")
-    st1, st2, st3 = st.columns(3)
+    with tab2:
+        kind = st.selectbox("Please select kind of crops do you want!",
+                            ["All",
+                             "Plantations",
+                             "Agriculture",
+                             "Vegetables"])
 
-    with st2:
-        st.image(image)
+        dataset = ml.add_rate(kind)
 
-    st.markdown("<svg width=\"705\" height=\"5\"><line x1=\"0\" y1=\"2.5\" x2=\"705\" y2=\"2.5\" stroke=\"black\" "
-                "stroke-width=\"4\" fill=\"black\" /></svg>", unsafe_allow_html=True)
-    st.markdown("<h3 style=\"text-align:center;\">Data Insight</h3>", unsafe_allow_html=True)
+        dec = dataset[dataset["rate_change"] < -1]
+        inc = dataset[dataset["rate_change"] > 1]
+        net = dataset[(dataset["rate_change"] > -1) & (dataset["rate_change"] < 1)]
 
-    restriction = state["login"]
+        labels = ["increase", "decrease", "stable"]
+        sized = [len(inc), len(dec), len(net)]
 
-    if "login" not in state or restriction == "False":
-        st.warning("Please login with your registered email!")
-        return
+        fig, ax = vs.chart_pie(labels, sized, kind)
 
-    kind = st.radio("Please select kind of crops do you want!",
-                    ["All",
-                     "Plantations",
-                     "Agriculture",
-                     "Vegetables"])
+        st.pyplot(fig)
 
-    dataset = ml.add_rate(kind)
-
-    dec = len(dataset[dataset["rate_change"] < -1])
-    inc = len(dataset[dataset["rate_change"] > 1])
-    net = len(dataset[(dataset["rate_change"] > -1) & (dataset["rate_change"] < 1)])
-
-    labels = ["increase", "decrease", "stable"]
-    sized = [inc, dec, net]
-
-    fig, ax = vs.chart_pie(labels, sized, kind)
-
-    st.pyplot(fig)
+        st1, st2, st3 = st.columns(3)
+        with st1:
+            st.markdown("List of Commodity Increase")
+            st.dataframe(inc["commodity"].reset_index().drop('index', axis=1))
+        with st2:
+            st.markdown("List of Commodity Decrease")
+            st.dataframe(dec["commodity"].reset_index().drop('index', axis=1))
+        with st3:
+            st.markdown("List of Commodity Neutral")
+            st.dataframe(net["commodity"].reset_index().drop('index', axis=1))
 
 
 def projection(st, **state):
@@ -388,7 +384,6 @@ app.hide_navigation = True
 app.add_app("Sign Up", sign_up)
 app.add_app("Login", login)
 app.add_app("Dashboard", dashboard)
-app.add_app("Data Insight", data_insight)
 app.add_app("Projection", projection)
 app.add_app("Deployment Model", deployment_model)
 app.add_app("Report", report)
