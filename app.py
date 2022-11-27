@@ -200,10 +200,10 @@ def data_insight(st, **state):
     inc = len(dataset[dataset["rate_change"] > 1])
     net = len(dataset[(dataset["rate_change"] > -1) & (dataset["rate_change"] < 1)])
 
-    labels = ["Decrease", "Increase", "Neutral"]
-    sized = [dec, inc, net]
+    labels = ["increase", "decrease", "stable"]
+    sized = [inc, dec, net]
 
-    fig, ax = vs.chart_pie(labels, sized)
+    fig, ax = vs.chart_pie(labels, sized, kind)
 
     st.pyplot(fig)
 
