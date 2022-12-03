@@ -388,6 +388,6 @@ app.add_app("Projection", projection)
 app.add_app("Deployment Model", deployment_model)
 app.add_app("Report", report)
 app.add_app("Account Setting", account)
-app.add_app("Logout", logout)
+# app.add_app("Logout", logout)
 
 app.run()
