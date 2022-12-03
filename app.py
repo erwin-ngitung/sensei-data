@@ -50,13 +50,10 @@ def sign_up(st, **state):
 
     elif save and check_email(email) == "duplicate email":
         st.success("Hello " + name + ", your profile hasn't been save successfully because your email same with other!")
-        MultiPage.save({"login": "False"})
 
     elif save and check_email(email) == "invalid email":
         st.success("Hello " + name + ", your profile hasn't been save successfully because your email invalid!")
-        MultiPage.save({"login": "False"})
     else:
-        MultiPage.save({"login": "False"})
         pass
 
 
@@ -96,19 +93,15 @@ def login(st, **state):
 
         elif submit and status == 'wrong password':
             st.error("Login failed because your password is wrong!")
-            MultiPage.save({"login": "False"})
 
         elif submit and status == 'not register':
             st.error("You haven't registered to this app! Please sign up your account!")
-            MultiPage.save({"login": "False"})
 
         else:
-            MultiPage.save({"login": "False"})
             pass
 
     except:
         st.error("Please login with your registered email!")
-        MultiPage.save({"login": "False"})
 
 
 def dashboard(st, **state):
@@ -375,7 +368,7 @@ def account(st, **state):
 
 def logout(st, **state):
     st.success("Your account has been log out from this app")
-    MultiPage.save({"login": "False"})
+    # MultiPage.save({"login": "False"})
 
 
 app = MultiPage()
