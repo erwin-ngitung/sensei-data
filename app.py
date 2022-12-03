@@ -6,8 +6,9 @@ import pandas as pd
 import numpy as np
 from utils import visualization as vs
 import warnings
-
 warnings.filterwarnings("ignore")
+
+app = MultiPage()
 
 
 def sign_up(st, **state):
@@ -368,10 +369,9 @@ def account(st, **state):
 
 def logout(st, **state):
     st.success("Your account has been log out from this app")
-    # MultiPage.save({"login": "False"})
+    MultiPage.save({"login": "False"})
 
 
-app = MultiPage()
 app.st = st
 
 app.navbar_name = "Menu"
