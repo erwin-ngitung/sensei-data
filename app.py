@@ -367,9 +367,9 @@ def account(st, **state):
         pass
 
 
-def logout(st, **state):
-    st.success("Your account has been log out from this app")
-    MultiPage.save({"login": "False"})
+# def logout(st, **state):
+#     st.success("Your account has been log out from this app")
+#     MultiPage.save({"login": "False"})
 
 
 app = MultiPage()
