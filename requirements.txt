@@ -8,3 +8,4 @@ pillow~=9.2.0
 streamlit-multipage~=0.0.18
 openpyxl~=3.0.10
 rasterio~=1.2.8
+ogr
